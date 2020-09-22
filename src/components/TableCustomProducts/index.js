@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Button, TextField, Box, Typography } from "@material-ui/core";
+import { TextField, Box } from "@material-ui/core";
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -12,7 +12,6 @@ import Paper from "@material-ui/core/Paper";
 
 import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
 import MenuIcon from "@material-ui/icons/Menu";
-import AddIcon from "@material-ui/icons/Add";
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -36,9 +35,6 @@ const useStyles = makeStyles({
   table: {
     minWidth: 700,
   },
-  button: {
-    color: "#fff",
-  },
 });
 
 export default function TableCustom({ data }) {
@@ -46,13 +42,6 @@ export default function TableCustom({ data }) {
 
   return (
     <div>
-      <Typography variant="h4" color="textSecondary">
-        Product list
-      </Typography>
-      <Button className={classes.button} variant="contained" color="primary">
-        <AddIcon />
-        Add product
-      </Button>
       <Box py={3}>
         <TextField id="search" label="Search" variant="outlined" />
       </Box>
@@ -89,7 +78,6 @@ export default function TableCustom({ data }) {
                   <FiberManualRecordIcon
                     color={row.active ? "primary" : "error"}
                   />
-                  {row.active}
                 </StyledTableCell>
                 <StyledTableCell align="right">
                   <MenuIcon />

@@ -1,9 +1,8 @@
 import React from "react";
 
 import { ThemeProvider, createMuiTheme } from "@material-ui/core";
-import { Box, Container, Grid } from "@material-ui/core";
 
-import Products from "./pages/Products";
+import Routes from "./routes";
 
 function App() {
   const theme = createMuiTheme({
@@ -27,7 +26,7 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Products />
+      <Routes />
     </ThemeProvider>
   );
 }

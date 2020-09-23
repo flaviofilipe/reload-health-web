@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { useHistory } from "react-router-dom";
 
@@ -22,6 +22,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 
 import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
 import MenuIcon from "@material-ui/icons/Menu";
+import api from "../../services/api";
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -49,10 +50,12 @@ const useStyles = makeStyles({
 
 export default function TableCustom({ data }) {
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [productOptions, setProductOptions] = useState({});
   let history = useHistory();
 
-  const handleClick = (event) => {
+  const handleClick = (event, product) => {
+    setProductOptions(product);
     setAnchorEl(event.currentTarget);
   };
 
@@ -60,18 +63,20 @@ export default function TableCustom({ data }) {
     setAnchorEl(null);
   };
 
-  const StyledMenuItem = withStyles((theme) => ({
-    root: {
-      "&:focus": {
-        backgroundColor: theme.palette.primary.main,
-        "& .MuiListItemIcon-root, & .MuiListItemText-primary": {
-          color: theme.palette.common.white,
-        },
-      },
-    },
-  }))(MenuItem);
+  async function deleteProduct() {
+    await api.delete("products/" + productOptions.id).then(() => {
+      const toRemoveIndex = data.findIndex(
+        (element) => element.id === productOptions.id
+      );
 
-  const Options = ({ id }) => {
+      data.splice(toRemoveIndex, 1);
+    });
+    handleClose();
+  }
+
+  const StyledMenuItem = withStyles((theme) => ({}))(MenuItem);
+
+  const Options = () => {
     return (
       <Menu
         id="simple-menu"
@@ -83,7 +88,7 @@ export default function TableCustom({ data }) {
       >
         <StyledMenuItem
           onClick={() => {
-            history.push("/edit/" + id);
+            history.push("/edit/" + productOptions.id);
           }}
         >
           <ListItemIcon>
@@ -91,7 +96,7 @@ export default function TableCustom({ data }) {
           </ListItemIcon>
           <ListItemText primary="Edit" />
         </StyledMenuItem>
-        <StyledMenuItem>
+        <StyledMenuItem onClick={deleteProduct}>
           <ListItemIcon>
             <DeleteIcon fontSize="small" />
           </ListItemIcon>
@@ -141,14 +146,12 @@ export default function TableCustom({ data }) {
                   />
                 </StyledTableCell>
                 <StyledTableCell align="right">
-                  <div>
-                    <MenuIcon
-                      aria-controls="simple-menu"
-                      aria-haspopup="true"
-                      onClick={handleClick}
-                    />
-                    <Options id={row.id} />
-                  </div>
+                  <MenuIcon
+                    aria-controls="simple-menu"
+                    aria-haspopup="true"
+                    onClick={(e) => handleClick(e, row)}
+                  />
+                  <Options product={row} />
                 </StyledTableCell>
               </StyledTableRow>
             ))}

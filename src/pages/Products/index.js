@@ -1,28 +1,9 @@
 import React, { useEffect, useState } from "react";
-import {
-  makeStyles,
-  Container,
-  Typography,
-  Button,
-  Input,
-} from "@material-ui/core";
+import { makeStyles, Container, Typography, Button } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 
 import api from "../../services/api";
 import TableCustomProducts from "../../components/TableCustomProducts";
-
-function createData(
-  id,
-  image,
-  ref,
-  name,
-  category,
-  price_ht,
-  price_ttc,
-  active
-) {
-  return { id, image, ref, name, category, price_ht, price_ttc, active };
-}
 
 const useStyles = makeStyles((theme) => ({
   root: {

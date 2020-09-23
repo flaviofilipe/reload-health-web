@@ -1,13 +1,33 @@
-import React from "react";
-import { makeStyles, Container, Typography, Grid } from "@material-ui/core";
+import React, { useState, useEffect } from "react";
+import {
+  makeStyles,
+  Container,
+  Typography,
+  Grid,
+  TextField,
+  Box,
+  InputAdornment,
+  Button,
+  ButtonGroup,
+} from "@material-ui/core";
 
-import RightColumn from "./RightColumn";
-import MainColumn from "./MainColumn";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import Checkbox from "@material-ui/core/Checkbox";
+import api from "../../services/api";
+import { useHistory } from "react-router-dom";
+
+import ProductForm from "../../components/ProductForm";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     height: "120vh",
-    backgroundColor: theme.palette.background.default,
+  },
+  category: {
+    width: "100%",
+    maxWidth: 360,
   },
   form: {
     marginTop: theme.spacing(5),
@@ -15,30 +35,20 @@ const useStyles = makeStyles((theme) => ({
       paddingBottom: theme.spacing(2),
     },
   },
+  button: {
+    color: "#fff",
+    width: "100%",
+  },
+
+  buttonActive: {
+    color: "#fff",
+  },
 }));
 
 const NewProduct = () => {
   const classes = useStyles();
-  return (
-    <div className={classes.root}>
-      <Container>
-        <Typography variant="h4" color="textSecondary">
-          Product list
-        </Typography>
 
-        <form className={classes.form}>
-          <Grid container>
-            <Grid md={9} xs={12}>
-              <MainColumn />
-            </Grid>
-            <Grid border={1} md={3} xs={12}>
-              <RightColumn />
-            </Grid>
-          </Grid>
-        </form>
-      </Container>
-    </div>
-  );
+  return <ProductForm />;
 };
 
 export default NewProduct;

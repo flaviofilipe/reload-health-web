@@ -110,7 +110,7 @@ export default function NewProduct({ product }) {
     };
 
     try {
-      if (product.id) {
+      if (product && product.id) {
         await api.put("products/" + product.id, data);
       } else {
         await api.post("products", data);
@@ -292,8 +292,8 @@ export default function NewProduct({ product }) {
                         setActive(false);
                       }}
                       variant="contained"
-                      color={active !== true ? "primary" : ""}
-                      className={active !== true ? classes.buttonActive : ""}
+                      color={!active ? "primary" : ""}
+                      className={!active ? classes.buttonActive : ""}
                       value={active}
                     >
                       NO

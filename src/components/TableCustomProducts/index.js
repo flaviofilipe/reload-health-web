@@ -26,7 +26,7 @@ import api from "../../services/api";
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
-    backgroundColor: theme.palette.common.black,
+    backgroundColor: theme.palette.secondary.main,
     color: theme.palette.common.white,
   },
   body: {
@@ -115,37 +115,42 @@ export default function TableCustom({ data }) {
         <Table className={classes.table} aria-label="customized table">
           <TableHead>
             <TableRow>
-              <StyledTableCell align="right">ID</StyledTableCell>
-              <StyledTableCell align="right">Image</StyledTableCell>
-              <StyledTableCell align="right">Réf.</StyledTableCell>
+              <StyledTableCell align="center">ID</StyledTableCell>
+              <StyledTableCell align="center">Image</StyledTableCell>
+              <StyledTableCell align="center">Réf.</StyledTableCell>
               <StyledTableCell>Name</StyledTableCell>
-              <StyledTableCell align="right">Category</StyledTableCell>
-              <StyledTableCell align="right">Price HT</StyledTableCell>
-              <StyledTableCell align="right">Quantity</StyledTableCell>
-              <StyledTableCell align="right">Active</StyledTableCell>
-              <StyledTableCell align="right"></StyledTableCell>
+              <StyledTableCell align="left">Category</StyledTableCell>
+              <StyledTableCell align="center">Price HT</StyledTableCell>
+              <StyledTableCell align="center">Quantity</StyledTableCell>
+              <StyledTableCell align="center">Active</StyledTableCell>
+              <StyledTableCell align="center"></StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {data.map((row) => (
               <StyledTableRow key={row.name}>
-                <StyledTableCell align="right">{row.id}</StyledTableCell>
-                <StyledTableCell align="right">{row.image}</StyledTableCell>
-                <StyledTableCell align="right">{row.ref}</StyledTableCell>
+                <StyledTableCell align="center">{row.id}</StyledTableCell>
+                <StyledTableCell align="center">{row.image}</StyledTableCell>
+                <StyledTableCell align="center">{row.ref}</StyledTableCell>
                 <StyledTableCell component="th" scope="row">
                   {row.name}
                 </StyledTableCell>
-                <StyledTableCell align="right">
-                  {row.categories.length > 0 && row.categories[0].name}
+                <StyledTableCell align="left">
+                  {row.categories.length > 0 &&
+                    row.categories.map((category) => (
+                      <li key={category.id}>{category.name}</li>
+                    ))}
                 </StyledTableCell>
-                <StyledTableCell align="right">{row.price_ht}</StyledTableCell>
-                <StyledTableCell align="right">{row.price_ttc}</StyledTableCell>
-                <StyledTableCell align="right">
+                <StyledTableCell align="center">{row.price_ht}</StyledTableCell>
+                <StyledTableCell align="center">
+                  {row.price_ttc}
+                </StyledTableCell>
+                <StyledTableCell align="center">
                   <FiberManualRecordIcon
                     color={row.active ? "primary" : "error"}
                   />
                 </StyledTableCell>
-                <StyledTableCell align="right">
+                <StyledTableCell align="center">
                   <MenuIcon
                     aria-controls="simple-menu"
                     aria-haspopup="true"

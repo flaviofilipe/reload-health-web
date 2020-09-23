@@ -71,6 +71,7 @@ export default function NewProduct({ product }) {
   useEffect(() => {
     function setDefaultValues() {
       if (product) {
+        let categoriesId = [];
         setName(product.name);
         setResume(product.resume);
         setDescription(product.description);
@@ -79,6 +80,9 @@ export default function NewProduct({ product }) {
         setReference(product.ref);
         setPriceHt(product.price_ht);
         setPriceTtc(product.price_ttc);
+        product.categories &&
+          product.categories.map((category) => categoriesId.push(category.id));
+        setChecked(categoriesId);
       }
     }
     setDefaultValues();
@@ -96,8 +100,8 @@ export default function NewProduct({ product }) {
 
     setChecked(newChecked);
   };
-  async function submit(e) {
-    e.preventDefault();
+
+  async function submitProducts(productId) {
     const data = {
       name,
       resume,
@@ -109,23 +113,41 @@ export default function NewProduct({ product }) {
       price_ttc,
     };
 
+    let response;
+
     try {
       if (product && product.id) {
-        await api.put("products/" + product.id, data);
+        response = await api.put("products/" + product.id, data);
       } else {
-        await api.post("products", data);
+        response = await api.post("products", data);
       }
-      history.push("/");
     } catch (error) {
       console.log(error);
     }
+
+    return response.data;
+  }
+
+  async function submitCategories(productId) {
+    await api.post(`products/${productId}/category`, {
+      category_id: checked,
+    });
+  }
+
+  async function submit(e) {
+    e.preventDefault();
+    await submitProducts().then((newProduct) => {
+      submitCategories(newProduct.id).then(() => {
+        history.replace("/");
+      });
+    });
   }
 
   return (
     <div className={classes.root}>
       <Container>
         <Typography variant="h4" color="textSecondary">
-          Product list
+          {product ? "Update Product" : "Create Product"}
         </Typography>
 
         <form onSubmit={submit}>

@@ -1,5 +1,7 @@
 import React from "react";
 
+import { useHistory } from "react-router-dom";
+
 import { TextField, Box } from "@material-ui/core";
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
@@ -9,6 +11,14 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+
+import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/Delete";
+
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
 
 import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
 import MenuIcon from "@material-ui/icons/Menu";
@@ -39,6 +49,57 @@ const useStyles = makeStyles({
 
 export default function TableCustom({ data }) {
   const classes = useStyles();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  let history = useHistory();
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const StyledMenuItem = withStyles((theme) => ({
+    root: {
+      "&:focus": {
+        backgroundColor: theme.palette.primary.main,
+        "& .MuiListItemIcon-root, & .MuiListItemText-primary": {
+          color: theme.palette.common.white,
+        },
+      },
+    },
+  }))(MenuItem);
+
+  const Options = ({ id }) => {
+    return (
+      <Menu
+        id="simple-menu"
+        anchorEl={anchorEl}
+        elevation={1}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        <StyledMenuItem
+          onClick={() => {
+            history.push("/edit/" + id);
+          }}
+        >
+          <ListItemIcon>
+            <EditIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText primary="Edit" />
+        </StyledMenuItem>
+        <StyledMenuItem>
+          <ListItemIcon>
+            <DeleteIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText primary="Remove" />
+        </StyledMenuItem>
+      </Menu>
+    );
+  };
 
   return (
     <div>
@@ -80,7 +141,14 @@ export default function TableCustom({ data }) {
                   />
                 </StyledTableCell>
                 <StyledTableCell align="right">
-                  <MenuIcon />
+                  <div>
+                    <MenuIcon
+                      aria-controls="simple-menu"
+                      aria-haspopup="true"
+                      onClick={handleClick}
+                    />
+                    <Options id={row.id} />
+                  </div>
                 </StyledTableCell>
               </StyledTableRow>
             ))}

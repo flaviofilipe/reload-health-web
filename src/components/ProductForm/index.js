@@ -43,19 +43,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function NewProduct() {
+export default function NewProduct({ product }) {
   const classes = useStyles();
 
   const [categories, setCategories] = useState([]);
 
-  const [name, setName] = useState("Name Test");
-  const [resume, setResume] = useState("Newww");
-  const [description, setDescription] = useState("Teste");
+  const [name, setName] = useState("");
+  const [resume, setResume] = useState("");
+  const [description, setDescription] = useState("");
   const [active, setActive] = useState(true);
-  const [quantity, setQuantity] = useState(100);
-  const [ref, setReference] = useState("1234");
-  const [price_ht, setPriceHt] = useState(100);
-  const [price_ttc, setPriceTtc] = useState(120);
+  const [quantity, setQuantity] = useState(0);
+  const [ref, setReference] = useState("");
+  const [price_ht, setPriceHt] = useState(0);
+  const [price_ttc, setPriceTtc] = useState(0);
   const [checked, setChecked] = React.useState([]);
 
   let history = useHistory();
@@ -67,6 +67,22 @@ export default function NewProduct() {
     }
     getCategories();
   }, []);
+
+  useEffect(() => {
+    function setDefaultValues() {
+      if (product) {
+        setName(product.name);
+        setResume(product.resume);
+        setDescription(product.description);
+        setActive(product.active);
+        setQuantity(product.quantity);
+        setReference(product.ref);
+        setPriceHt(product.price_ht);
+        setPriceTtc(product.price_ttc);
+      }
+    }
+    setDefaultValues();
+  }, [product]);
 
   const handleToggle = (value) => () => {
     const currentIndex = checked.indexOf(value);
@@ -81,6 +97,7 @@ export default function NewProduct() {
     setChecked(newChecked);
   };
   async function submit(e) {
+    e.preventDefault();
     const data = {
       name,
       resume,
@@ -93,11 +110,15 @@ export default function NewProduct() {
     };
 
     try {
-      const response = await api.post("products", data);
+      if (product.id) {
+        await api.put("products/" + product.id, data);
+      } else {
+        await api.post("products", data);
+      }
+      history.push("/");
     } catch (error) {
       console.log(error);
     }
-    history.push("/");
   }
 
   return (
@@ -107,190 +128,194 @@ export default function NewProduct() {
           Product list
         </Typography>
 
-        <Grid container>
-          <Grid item={true} md={9} xs={12}>
-            <Box
-              className={classes.root}
-              mr={3}
-              p={5}
-              border={1}
-              borderColor="grey.500"
-            >
-              <Typography>Name</Typography>
-              <TextField
-                id="outlined-multiline-static"
-                fullWidth
-                multiline
-                variant="outlined"
-                name="resume"
-                value={name}
-                onChange={(value) => setName(value.target.value)}
-              />
-              <Typography>Resume</Typography>
-              <TextField
-                id="outlined-multiline-static"
-                fullWidth
-                multiline
-                rows={4}
-                variant="outlined"
-                name="resume"
-                value={resume}
-                onChange={(value) => setResume(value.target.value)}
-              />
-              <Typography>Description</Typography>
-              <TextField
-                id="outlined-multiline-static"
-                fullWidth
-                multiline
-                rows={10}
-                variant="outlined"
-                name="description"
-                value={description}
-                onChange={(value) => setDescription(value.target.value)}
-              />
-            </Box>
-          </Grid>
-          <Grid item={true} md={3} xs={12}>
-            <Box ml={2}>
-              <Box>
-                <Typography>Reference</Typography>
+        <form onSubmit={submit}>
+          <Grid container>
+            <Grid item={true} md={9} xs={12}>
+              <Box
+                className={classes.root}
+                mr={3}
+                p={5}
+                border={1}
+                borderColor="grey.500"
+              >
+                <Typography>Name</Typography>
                 <TextField
                   id="outlined-multiline-static"
                   fullWidth
+                  multiline
                   variant="outlined"
-                  name="ref"
-                  value={ref}
-                  onChange={(value) => setReference(value.target.value)}
+                  name="resume"
+                  value={name}
+                  onChange={(value) => setName(value.target.value)}
                 />
-              </Box>
-              <Box>
-                <Typography>Quantity</Typography>
+                <Typography>Resume</Typography>
                 <TextField
                   id="outlined-multiline-static"
                   fullWidth
+                  multiline
+                  rows={4}
                   variant="outlined"
-                  name="quantity"
-                  value={quantity}
-                  onChange={(value) => setQuantity(value.target.value)}
+                  name="resume"
+                  value={resume}
+                  onChange={(value) => setResume(value.target.value)}
+                />
+                <Typography>Description</Typography>
+                <TextField
+                  id="outlined-multiline-static"
+                  fullWidth
+                  multiline
+                  rows={10}
+                  variant="outlined"
+                  name="description"
+                  value={description}
+                  onChange={(value) => setDescription(value.target.value)}
                 />
               </Box>
+            </Grid>
+            <Grid item={true} md={3} xs={12}>
+              <Box ml={2}>
+                <Box>
+                  <Typography>Reference</Typography>
+                  <TextField
+                    id="outlined-multiline-static"
+                    fullWidth
+                    variant="outlined"
+                    name="ref"
+                    value={ref}
+                    onChange={(value) => setReference(value.target.value)}
+                  />
+                </Box>
+                <Box>
+                  <Typography>Quantity</Typography>
+                  <TextField
+                    id="outlined-multiline-static"
+                    fullWidth
+                    variant="outlined"
+                    name="quantity"
+                    value={quantity}
+                    onChange={(value) => setQuantity(value.target.value)}
+                  />
+                </Box>
 
-              <Box>
-                <Typography>Price</Typography>
-                <Box display="flex">
-                  <Box mr={2}>
-                    <Typography variant="caption">HT</Typography>
-                    <TextField
-                      id="outlined-multiline-static"
-                      fullWidth
-                      variant="outlined"
-                      name="hc"
-                      value={price_ht}
-                      onChange={(value) => setPriceHt(value.target.value)}
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="start">€</InputAdornment>
-                        ),
-                      }}
-                    />
-                  </Box>
-                  <Box mr={2}>
-                    <Typography variant="caption">TTC</Typography>
-                    <TextField
-                      id="outlined-multiline-static"
-                      fullWidth
-                      variant="outlined"
-                      name="price_ttc"
-                      value={price_ttc}
-                      onChange={(value) => setPriceTtc(value.target.value)}
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="start">€</InputAdornment>
-                        ),
-                      }}
-                    />
+                <Box>
+                  <Typography>Price</Typography>
+                  <Box display="flex">
+                    <Box mr={2}>
+                      <Typography variant="caption">HT</Typography>
+                      <TextField
+                        id="outlined-multiline-static"
+                        fullWidth
+                        variant="outlined"
+                        name="hc"
+                        value={price_ht}
+                        onChange={(value) => setPriceHt(value.target.value)}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="start">€</InputAdornment>
+                          ),
+                        }}
+                      />
+                    </Box>
+                    <Box mr={2}>
+                      <Typography variant="caption">TTC</Typography>
+                      <TextField
+                        id="outlined-multiline-static"
+                        fullWidth
+                        variant="outlined"
+                        name="price_ttc"
+                        value={price_ttc}
+                        onChange={(value) => setPriceTtc(value.target.value)}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="start">€</InputAdornment>
+                          ),
+                        }}
+                      />
+                    </Box>
                   </Box>
                 </Box>
-              </Box>
 
-              <Box>
-                <Typography>Categories</Typography>
-                <Box border={1} p={3} borderColor="grey.500">
-                  <Box>
-                    <List className={classes.category}>
-                      {categories.map((value) => {
-                        return (
-                          <ListItem
-                            key={value.id}
-                            role={undefined}
-                            dense
-                            button
-                            onClick={handleToggle(value.id)}
-                          >
-                            <ListItemIcon>
-                              <Checkbox
-                                edge="start"
-                                checked={checked.indexOf(value.id) !== -1}
-                                tabIndex={-1}
-                                disableRipple
-                                inputProps={{ "aria-labelledby": value.name }}
+                <Box>
+                  <Typography>Categories</Typography>
+                  <Box border={1} p={3} borderColor="grey.500">
+                    <Box>
+                      <List className={classes.category}>
+                        {categories.map((value) => {
+                          return (
+                            <ListItem
+                              key={value.id}
+                              role={undefined}
+                              dense
+                              button
+                              onClick={handleToggle(value.id)}
+                            >
+                              <ListItemIcon>
+                                <Checkbox
+                                  edge="start"
+                                  checked={checked.indexOf(value.id) !== -1}
+                                  tabIndex={-1}
+                                  disableRipple
+                                  inputProps={{ "aria-labelledby": value.name }}
+                                />
+                              </ListItemIcon>
+                              <ListItemText
+                                id={value.id}
+                                primary={value.name}
                               />
-                            </ListItemIcon>
-                            <ListItemText id={value.id} primary={value.name} />
-                          </ListItem>
-                        );
-                      })}
-                    </List>
+                            </ListItem>
+                          );
+                        })}
+                      </List>
+                    </Box>
                   </Box>
                 </Box>
-              </Box>
 
-              <Box>
-                <Typography>Active?</Typography>
-                <ButtonGroup aria-label="outlined primary button group">
+                <Box>
+                  <Typography>Active?</Typography>
+                  <ButtonGroup aria-label="outlined primary button group">
+                    <Button
+                      size="large"
+                      variant="contained"
+                      name="active"
+                      onClick={(e) => {
+                        setActive(true);
+                      }}
+                      color={active ? "primary" : ""}
+                      className={active ? classes.buttonActive : ""}
+                      value={active}
+                    >
+                      YES
+                    </Button>
+                    <Button
+                      name="active"
+                      onClick={(e) => {
+                        setActive(false);
+                      }}
+                      variant="contained"
+                      color={active !== true ? "primary" : ""}
+                      className={active !== true ? classes.buttonActive : ""}
+                      value={active}
+                    >
+                      NO
+                    </Button>
+                  </ButtonGroup>
+                </Box>
+
+                <Box mt={5} width={1}>
                   <Button
                     size="large"
                     variant="contained"
-                    name="active"
-                    onClick={(e) => {
-                      setActive(true);
-                    }}
-                    color={active ? "primary" : ""}
-                    className={active ? classes.buttonActive : ""}
-                    value={active}
+                    color="primary"
+                    className={classes.button}
+                    type="submit"
                   >
-                    YES
+                    Save
                   </Button>
-                  <Button
-                    name="active"
-                    onClick={(e) => {
-                      setActive(false);
-                    }}
-                    variant="contained"
-                    color={active === false ? "primary" : ""}
-                    className={active === false ? classes.buttonActive : ""}
-                    value={active}
-                  >
-                    NO
-                  </Button>
-                </ButtonGroup>
+                </Box>
               </Box>
-
-              <Box mt={5} width={1}>
-                <Button
-                  size="large"
-                  variant="contained"
-                  color="primary"
-                  className={classes.button}
-                  onClick={submit}
-                  type="submit"
-                >
-                  Save
-                </Button>
-              </Box>
-            </Box>
+            </Grid>
           </Grid>
-        </Grid>
+        </form>
       </Container>
     </div>
   );

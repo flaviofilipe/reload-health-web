@@ -2,7 +2,6 @@ import React, { useState } from "react";
 
 import { useHistory } from "react-router-dom";
 
-import { TextField, Box } from "@material-ui/core";
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -108,9 +107,6 @@ export default function TableCustom({ data }) {
 
   return (
     <div>
-      <Box py={3}>
-        <TextField id="search" label="Search" variant="outlined" />
-      </Box>
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="customized table">
           <TableHead>

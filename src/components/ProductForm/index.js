@@ -19,6 +19,8 @@ import Checkbox from "@material-ui/core/Checkbox";
 import api from "../../services/api";
 import { useHistory } from "react-router-dom";
 
+import ImagesList from "./ImagesList";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     height: "120vh",
@@ -41,6 +43,39 @@ const useStyles = makeStyles((theme) => ({
   buttonActive: {
     color: "#fff",
   },
+  gridList: {
+    flexWrap: "nowrap",
+    transform: "translateZ(0)",
+  },
+  card: {
+    margin: 5,
+    width: 150,
+  },
+  media: {
+    height: 90,
+    paddingTop: "56.25%", // 16:9
+  },
+  newImage: {
+    margin: 5,
+    display: "flex",
+    width: 150,
+    alignContent: "center",
+    alignItems: "center",
+    background: theme.palette.background.default,
+  },
+
+  newImageCard: {
+    display: "flex",
+    width: 150,
+    background: "transparent",
+    justifyContent: "center",
+  },
+  input: {
+    display: "none",
+  },
+  imagesList: {
+    overflow: "hidden",
+  },
 }));
 
 export default function NewProduct({ product }) {
@@ -56,7 +91,9 @@ export default function NewProduct({ product }) {
   const [ref, setReference] = useState("");
   const [price_ht, setPriceHt] = useState(0);
   const [price_ttc, setPriceTtc] = useState(0);
-  const [checked, setChecked] = React.useState([]);
+  const [checked, setChecked] = useState([]);
+  const [imagesList, setImagesList] = useState([]);
+  const [image, setImage] = useState("");
 
   let history = useHistory();
 
@@ -83,6 +120,7 @@ export default function NewProduct({ product }) {
         product.categories &&
           product.categories.map((category) => categoriesId.push(category.id));
         setChecked(categoriesId);
+        setImagesList(product.images);
       }
     }
     setDefaultValues();
@@ -133,10 +171,18 @@ export default function NewProduct({ product }) {
       category_id: checked,
     });
   }
+  async function submitImage(productId) {
+    const formData = new FormData();
+    if (image) {
+      formData.append("image[]", image, image.name);
+      await api.post(`products/${productId}/images`, formData);
+    }
+  }
 
   async function submit(e) {
     e.preventDefault();
     await submitProducts().then((newProduct) => {
+      submitImage(newProduct.id);
       submitCategories(newProduct.id).then(() => {
         history.replace("/");
       });
@@ -160,6 +206,11 @@ export default function NewProduct({ product }) {
                 border={1}
                 borderColor="grey.500"
               >
+                <ImagesList
+                  setImage={setImage}
+                  setImagesList={setImagesList}
+                  imagesList={imagesList}
+                />
                 <Typography>Name</Typography>
                 <TextField
                   id="outlined-multiline-static"

@@ -19,7 +19,7 @@ function App() {
       },
       background: {
         default: "#f4f6f8",
-        paper: "#FFF",
+        paper: "#f4f6f8",
       },
     },
   });
